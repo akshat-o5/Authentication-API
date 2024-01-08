@@ -3,6 +3,37 @@ from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 
 # Create your models here.
 
+
+# Custom User Manager
+class HumanManager(BaseUserManager):
+    def create_user(self, email, name, tnc, password=None, password2=None):
+        if not email:
+            raise ValueError("Humans must have an email address")
+
+        user = self.model(
+            email=self.normalize_email(email),
+            name=name,
+            tnc=tnc
+        )
+
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
+
+    def create_superuser(self, name, tnc, password=None):
+        user = self.create_user(
+            email,
+            password=password,
+            name=name,
+            tnc=tnc
+        )
+        user.is_admin = True
+        user.save(using=self._db)
+        return user
+
+
+
+
 # Custom User Model 
 class Human(AbstractBaseUser):
     email = models.EmailField(
@@ -17,10 +48,10 @@ class Human(AbstractBaseUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    # objects = MyUserManager()
+    objects = HumanManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = ["name", "tc"]
+    REQUIRED_FIELDS = ["name", "tnc"]
 
     def __str__(self):
         return self.email
