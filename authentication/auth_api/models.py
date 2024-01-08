@@ -38,7 +38,7 @@ class HumanManager(BaseUserManager):
 class Human(AbstractBaseUser):
     email = models.EmailField(
         verbose_name="email",
-        max_length=255,
+        max_length=100,
         unique=True,
     )
     name = models.CharField(max_length=20)
