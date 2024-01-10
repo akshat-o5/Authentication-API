@@ -137,6 +137,25 @@ AUTH_USER_MODEL = 'auth_api.Human'
 
 
 
+# Email Configuration
+# Use the SMTP email backend
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+# SMTP server settings for Gmail
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+# Default 'from' address for emails sent by Django
+DEFAULT_FROM_EMAIL = 'webmaster@example.com'
+
+# Additional settings (optional)
+# EMAIL_USE_SSL = True  # Use SSL instead of TLS
+# EMAIL_TIMEOUT = 5  # Connection timeout in seconds
+# SERVER_EMAIL = 'your_server_email@example.com'  # Email address used for error messages sent to the site administrators
+
+
+
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users./
@@ -208,7 +227,7 @@ SIMPLE_JWT = {
 
 
 
-
+PASSWORD_RESET_TIMEOUT = 900  # in seconds
 
 
 CORS_ALLOWED_ORIGINS = [
