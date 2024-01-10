@@ -2,11 +2,12 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from auth_api.serializers import HumanRegisterationSerializer, HumanSerializer, HumanLoginSerializer
+from auth_api.serializers import HumanRegisterationSerializer, HumanSerializer, HumanLoginSerializer, HumanProfileSerializer
 from auth_api.models import Human, HumanManager
 from django.contrib.auth import authenticate
 from auth_api.renderers import HumanRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
 
 # Create your views here.
 
@@ -65,3 +66,16 @@ class HumanLoginView(APIView):
             else:
                 return Response({'errors':{'non_field_errors':['Email or Password is not Valid']}}, status=status.HTTP_404_NOT_FOUND)      
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)         
+
+
+
+
+
+
+
+class HumanProfileView(APIView):
+    renderer_classes = [HumanRenderer]
+    def get(self, request, format=None):
+        permission_classes = [IsAuthenticated]
+        serializer = HumanProfileSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)

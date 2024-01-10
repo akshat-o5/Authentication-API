@@ -41,4 +41,14 @@ class HumanLoginSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=100)
     class Meta:
         model = Human
-        fields = ['email', 'password']          
+        fields = ['email', 'password']        
+
+
+
+
+
+class HumanProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Human
+        fields = ['id', 'name', 'email']
+                    
