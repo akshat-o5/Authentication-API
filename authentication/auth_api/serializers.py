@@ -1,5 +1,9 @@
+from django.core.exceptions import ValidationError
 from rest_framework import serializers
 from auth_api.models import Human
+from django.utils.encoding import smart_str, force_bytes, DjangoUnicodeDecodeError
+from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 
 class HumanRegisterationSerializer(serializers.ModelSerializer):
@@ -69,3 +73,38 @@ class ChangePasswordSerializer(serializers.Serializer):
     human.set_password(password)
     human.save()
     return data
+
+
+
+
+
+
+
+
+
+class SendPasswordResetEmailSerializer(serializers.Serializer):
+  email = serializers.EmailField(max_length=100)
+  class Meta:
+    fields = ['email']
+
+  def validate(self, data):
+    email = data.get('email')
+    if Human.objects.filter(email=email).exists():
+      human = Human.objects.get(email = email)
+      uid = urlsafe_base64_encode(force_bytes(human.id))
+      print('Encoded UID', uid)
+      token = PasswordResetTokenGenerator().make_token(human)
+      print('Password Reset Token', token)
+      link = 'http://localhost:3000/reset/'+uid+'/'+token
+      print('Password Reset Link', link)
+      # Send EMail
+      body = 'Click Following Link to Reset Your Password '+link
+      data = {
+        'subject':'Reset Your Password',
+        'body':body,
+        'to_email':human.email
+      }
+      # Util.send_email(data)
+      return data
+    else:
+      raise serializers.ValidationError('You are not a Registered User')    

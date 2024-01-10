@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from auth_api.serializers import HumanRegisterationSerializer, HumanSerializer, HumanLoginSerializer, HumanProfileSerializer, ChangePasswordSerializer
+from auth_api.serializers import HumanRegisterationSerializer, HumanSerializer, HumanLoginSerializer, HumanProfileSerializer, ChangePasswordSerializer, SendPasswordResetEmailSerializer
 from auth_api.models import Human, HumanManager
 from django.contrib.auth import authenticate
 from auth_api.renderers import HumanRenderer
@@ -93,3 +93,28 @@ class ChangePasswordView(APIView):
     serializer = ChangePasswordSerializer(data=request.data, context={'human':request.user})
     serializer.is_valid(raise_exception=True)
     return Response({'msg':'Password Changed Successfully'}, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+
+class SendPasswordResetEmailView(APIView):
+  renderer_classes = [HumanRenderer]
+  def post(self, request, format=None):
+    serializer = SendPasswordResetEmailSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    return Response({'msg':'Password Reset link send. Please check your Email'}, status=status.HTTP_200_OK)
+
+
+
+
+
+class PasswordResetView(APIView):
+  renderer_classes = [HumanRenderer]
+  def post(self, request, format=None):
+    serializer = SendPasswordResetEmailSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    return Response({'msg':'Password Reset link send. Please check your Email'}, status=status.HTTP_200_OK)    
