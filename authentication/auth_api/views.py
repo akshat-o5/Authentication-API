@@ -6,8 +6,22 @@ from auth_api.serializers import HumanRegisterationSerializer, HumanSerializer, 
 from auth_api.models import Human, HumanManager
 from django.contrib.auth import authenticate
 from auth_api.renderers import HumanRenderer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 # Create your views here.
+
+
+
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
+
+
+
 
 class HumanRegisterationView(APIView):
 
@@ -36,7 +50,7 @@ class HumanRegisterationView(APIView):
 
 class HumanLoginView(APIView):
 
-    renderer_classes = [HumanRenderer]
+    renderer_classes = [HumanRenderer]  
 
     def post(self, request, forat=None):
         serializer = HumanLoginSerializer(data=request.data)
