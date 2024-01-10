@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from auth_api.serializers import HumanRegisterationSerializer, HumanSerializer, HumanLoginSerializer, HumanProfileSerializer
+from auth_api.serializers import HumanRegisterationSerializer, HumanSerializer, HumanLoginSerializer, HumanProfileSerializer, ChangePasswordSerializer
 from auth_api.models import Human, HumanManager
 from django.contrib.auth import authenticate
 from auth_api.renderers import HumanRenderer
@@ -75,7 +75,21 @@ class HumanLoginView(APIView):
 
 class HumanProfileView(APIView):
     renderer_classes = [HumanRenderer]
+    permission_classes = [IsAuthenticated]
     def get(self, request, format=None):
-        permission_classes = [IsAuthenticated]
         serializer = HumanProfileSerializer(request.user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
+
+
+
+class ChangePasswordView(APIView):
+  renderer_classes = [HumanRenderer]
+  permission_classes = [IsAuthenticated]
+  def post(self, request, format=None):
+    serializer = ChangePasswordSerializer(data=request.data, context={'human':request.user})
+    serializer.is_valid(raise_exception=True)
+    return Response({'msg':'Password Changed Successfully'}, status=status.HTTP_200_OK)
